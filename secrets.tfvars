@@ -1,1 +1,0 @@
-github_token="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"
