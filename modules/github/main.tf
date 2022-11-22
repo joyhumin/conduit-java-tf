@@ -1,5 +1,6 @@
 locals {
   file_path = "${path.root}/artifact"
+  repo = data.github_release.conduit
 }
 data "github_release" "conduit" {
   repository  = "conduit_typescript_java_bdd"
@@ -10,7 +11,7 @@ data "github_release" "conduit" {
 resource "null_resource" "artifact" {
   provisioner "local-exec" {
     //noinspection HILUnresolvedReference
-    command = "rm -rf *.zip; curl -L ${data.github_release.conduit.assets[0].browser_download_url} > ${local.file_path}-ll${data.github_release.conduit.release_tag}.zip "
+    command = "rm -rf *.zip; curl -L ${local.repo.assets[0].browser_download_url} > ${local.file_path}-${local.repo.release_tag}.zip "
   }
 }
 
