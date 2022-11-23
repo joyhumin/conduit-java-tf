@@ -11,10 +11,6 @@ module "github" {
   token  = var.github_token
 }
 
-data "aws_key_pair" "conduit" {
-  key_name = "conduit-joy-test-keypair"
-}
-
 resource "aws_instance" "this" {
   ami                         = "ami-06bb074d1e196d0d4"
   instance_type               = "t2.micro"
@@ -22,11 +18,6 @@ resource "aws_instance" "this" {
   user_data                   = file("./bootstrap.sh")
   user_data_replace_on_change = true
   key_name                    = data.aws_key_pair.conduit.key_name
-#  security_groups             = [
-#    aws_security_group.allow_all_ssh.name,
-#    aws_security_group.allow_all_http.name,
-#    aws_security_group.allow_all_https.name
-#  ]
 
   vpc_security_group_ids = [
     aws_security_group.allow_all_http.id,
@@ -35,10 +26,6 @@ resource "aws_instance" "this" {
   ]
 
   tags = local.tags
-}
-
-data "aws_vpc" "sandbox" {
-  id = var.vpc_id
 }
 
 resource "aws_security_group" "allow_all_ssh" {
@@ -90,6 +77,7 @@ resource "aws_security_group" "allow_all_http" {
 
   tags = local.tags
 }
+
 resource "aws_security_group" "allow_all_https" {
   name        = "allow_all_https"
   description = "Allow all HTTPS inbound and outbound"
